@@ -1,0 +1,33 @@
+{
+  "name": "ramcoin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xe-Xo/RamCoin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Xe-Xo/RamCoin/issues"
+  },
+  "homepage": "https://github.com/Xe-Xo/RamCoin#readme",
+  "dependencies": {
+    "bip39": "^3.0.4",
+    "bn.js": "^5.2.0",
+    "crypto-js": "^4.1.1",
+    "delay": "^5.0.0",
+    "elliptic": "^6.5.4",
+    "express": "^4.17.2",
+    "hex-to-binary": "^1.0.1",
+    "path": "^0.12.7",
+    "request": "^2.88.2",
+    "uint8arrays": "^3.0.0",
+    "uuid": "^3.4.0",
+    "ws": "^8.4.2"
+  }
+}
