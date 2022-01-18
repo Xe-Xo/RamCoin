@@ -131,18 +131,14 @@ class P2PNode {
                 break;
         
             case P2P_CHANNELS.BLOCKCHAIN:
-                this.blockchain.replaceChain(parsedMessage, true, () => {
-                    this.transactionPool.clearBlockchainTransactions({chain: parsedMessage});
-                })
+
+                this.recieveChain(parsedMessage);
+
                 break;
 
             case P2P_CHANNELS.TRANSACTION:
-                if (!this.transactionPool.existingTransaction({
-                    inputAddress: this.wallet.publicKey
-                    })) {
-                    console.log(`Recieved New Transaction - ${Object.values(parsedMessage.outputMap)}`)
-                    this.transactionPool.setTransaction(parsedMessage);
-                }
+
+                this.recieveTransactions(parsedMessage);
 
                 break;
 
@@ -164,11 +160,19 @@ class P2PNode {
     }
 
     recieveTransaction(transaction){
-
+        if (!this.transactionPool.existingTransaction({
+            inputAddress: this.wallet.publicKey
+            })) {
+            console.log(`Recieved New Transaction - ${Object.values(transaction.outputMap)}`)
+            this.transactionPool.setTransaction(transaction);
+        }
     }
 
     recieveChain(chain){
-
+        console.log(`Received New Chain ${chain.length}`);
+        this.blockchain.replaceChain(chain, true, () => {
+            this.transactionPool.clearBlockchainTransactions({chain: chain});
+        })
     }
 
 
