@@ -117,12 +117,12 @@ class P2PNode {
    // SENDING MESSAGES
 
     sendMessage(channel,message){
-        console.log(`${channel} Sending Message ${message}`)
+        //console.log(`${channel} Sending Message ${message}`)
         this.libp2p.pubsub.publish(P2P_CHANNELS.MESSAGE, uint8ArrayFromString(message));
     }
 
     recieveMessage(channel,message_data){
-        console.log(`${channel} Received Message: ${uint8ArrayToString(message_data)}`);
+        //console.log(`${channel} Received Message: ${uint8ArrayToString(message_data)}`);
 
         const parsedMessage = JSON.parse(message);
 

@@ -45,15 +45,15 @@ class NodeFinder {
       message: messageObject => {
         const { channel, message } = messageObject;
 
-        console.log(`Message received. Channel: ${channel}. Message: ${message}`);
+        //console.log(`Message received. Channel: ${channel}. Message: ${message}`);
         const parsedMessage = JSON.parse(message);
 
         switch(channel) {
           case PUBNUB_CHANNELS.BROADCAST_ADDRESS:
-            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage}`);
-            console.log(`External address provided is ${parsedMessage.external_address}`);
-            console.log(`PeerId ${parsedMessage.peerId.id}`);
-            console.log(`Multiaddrs ${parsedMessage.multiaddrs}`); 
+            //console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage}`);
+            //console.log(`External address provided is ${parsedMessage.external_address}`);
+            //console.log(`PeerId ${parsedMessage.peerId.id}`);
+            //console.log(`Multiaddrs ${parsedMessage.multiaddrs}`); 
             const multiaddrs = [];
 
             for (let index = 0; index < parsedMessage.multiaddrs.length; index++) {
