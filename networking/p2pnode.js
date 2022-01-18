@@ -7,9 +7,15 @@ const Gossipsub = require('libp2p-gossipsub')
 const { fromString: uint8ArrayFromString } = require('uint8arrays/from-string')
 const { toString: uint8ArrayToString } = require('uint8arrays/to-string')
 
+const Bootstrap = require('libp2p-bootstrap')
+
 P2P_CHANNELS = {
     MESSAGE: "MESSAGE"
 }
+
+const bootstrapMultiaddres = [
+    '/dnsaddr/RamCoin.xexo.repl.co/p2p/QmZ5FreUxJ1Hze9TEYGMakzQJKkftCp2bVCv1i1Y5LGMYt',
+]
 
 class P2PNode {
 
@@ -19,6 +25,7 @@ class P2PNode {
         this.transactionPool = transactionPool;
         this.wallet = wallet;
     }
+
 
 
    async create(){
@@ -32,9 +39,21 @@ class P2PNode {
               streamMuxer: [Mplex],
               connEncryption: [NOISE],
               pubsub: Gossipsub,
+            },
+            config: {
+                peerDiscovery: {
+                    [Bootstrap.tag]: {
+                        list: bootstrapMultiaddres
+                    }
+                }
             }
       
         });
+
+        this.libp2p.on('peer:discovery', function (peerId) {
+            console.log('found peer: ', peerId.toB58String())
+          })
+
         
         await this.libp2p.start();
         this.subscribe(); 

@@ -1,7 +1,9 @@
 const PubNub = require('pubnub');
-
+const { Multiaddr } = require('multiaddr')
+const http = require('http');
 
 const credentials = require('./credentials');
+
 
 const CHANNELS = {
   NODE_HEARTBEAT: 'NODE_HEARTBEAT'
@@ -13,26 +15,14 @@ class NodeFinder {
     this.pubnub = new PubNub(credentials);
     this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
     this.pubnub.addListener(this.listener());
-    this.getExternal().then((externalip) => {
-      console.log("broadcasting")
-      this.broadcastAddress(externalip)})
+
   }
 
-  async getExternal(){
-    var http = require('http');
 
-    http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
-      resp.on('data', function(ip) {
-        console.log("My public IP address is: " + ip);
-        return ip;
-      });
-    });    
-  }
-
-  broadcastAddress(externalip) {
+  broadcastAddress() {
     this.publish({
       channel: CHANNELS.NODE_HEARTBEAT,
-      message: JSON.stringify({peerId: this.p2pNode.libp2p.peerId, multiaddrs: this.p2pNode.libp2p.multiaddrs, externalip: externalip})
+      message: JSON.stringify({peerId: this.p2pNode.libp2p.peerId, multiaddrs: this.p2pNode.libp2p.multiaddrs})
     });
   }
 
@@ -52,13 +42,8 @@ class NodeFinder {
 
         switch(channel) {
           case CHANNELS.NODE_HEARTBEAT:
-            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage.multiaddrs}`);
-
-            let newmultiaddress = parsedMessage.multiaddrs.toOptions()
-            
-            console.log(newmultiaddress);
-
-            //this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.newmultiaddress})
+            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage.keys()}`);          
+            this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.multiaddress})
             break;
           default:
             return;
