@@ -80,7 +80,7 @@ class P2PNode {
             try {
                 this.libp2p.peerStore.addressBook.set(peerId, multiaddrs);
             } catch (error) {
-                console.error('couldnt dial')
+                console.error('couldnt set address')
             }
 
             try {
@@ -108,8 +108,9 @@ class P2PNode {
     
    }
 
-   sendMessage(message_data){
-       this.libp2p.pubsub.publish(P2P_CHANNELS.MESSAGE, uint8ArrayFromString(message_data));
+   sendMessage(channel,message){
+       console.log(`${channel} Sending Message ${message}`)
+       this.libp2p.pubsub.publish(P2P_CHANNELS.MESSAGE, uint8ArrayFromString(message));
    }
 
    recieveMessage(channel,message_data){
