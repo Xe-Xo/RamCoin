@@ -24,6 +24,7 @@ class NodeFinder {
   async broadcastAddress() {
 
     const external_json = await fetch('https://httpbin.org/ip').then(response => response.json());
+    console.log(`My external IP is ${external_json.origin}`)
 
     this.publish({
       channel: CHANNELS.NODE_HEARTBEAT,
@@ -48,9 +49,10 @@ class NodeFinder {
 
         switch(channel) {
           case CHANNELS.NODE_HEARTBEAT:
-            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage}`);          
+            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage}`);
+            console.log(`External address provided is ${parsedMessage.external_address}`);       
             this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.multiaddress})
-            console.log(parsedMessage.external_address);
+            
             break;
           default:
             return;
