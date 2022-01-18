@@ -6,8 +6,6 @@ const http = require('http');
 const fetch = require('node-fetch');
 
 const credentials = require('./credentials');
-const { response } = require('express');
-
 
 const CHANNELS = {
   NODE_HEARTBEAT: 'NODE_HEARTBEAT'
