@@ -165,7 +165,7 @@ app.listen(PORT, () => {
 
 setInterval(async function() {
     try {
-        await p2pserver.sendMessage("TEST P2P");
+        await p2pserver.sendMessage("MESSAGE","TEST P2P");
     } catch (error) {
         console.error(error);
     }
