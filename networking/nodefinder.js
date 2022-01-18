@@ -1,5 +1,7 @@
 const PubNub = require('pubnub');
 const { Multiaddr } = require('multiaddr')
+const PeerId = require('peer-id')
+
 const http = require('http');
 const fetch = require('node-fetch');
 
@@ -50,8 +52,17 @@ class NodeFinder {
         switch(channel) {
           case CHANNELS.NODE_HEARTBEAT:
             console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage}`);
-            console.log(`External address provided is ${parsedMessage.external_address}`);       
-            this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.multiaddress})
+            console.log(`External address provided is ${parsedMessage.external_address}`);
+            console.log(`PeerId ${parsedMessage.peerId.id}`); 
+            let multiaddrs = [];
+            parsedMessage.multiaddrs.forEach((multiaddr) => {
+              console.log(multiaddr);
+              multiaddrs.push(Multiaddr(multiaddr));
+            });           
+            PeerId.createFromJSON(parsedMessage.peerId).then((peerId) => {
+              this.p2pNode.dial({peerId: peerId, multiaddrs: multiaddrs})
+            })      
+            
             
             break;
           default:

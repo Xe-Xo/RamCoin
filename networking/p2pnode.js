@@ -1,6 +1,6 @@
 
 const Libp2p = require('libp2p');
-const PeerId = require('peer-id')
+
 const TCP = require('libp2p-tcp')
 const Mplex = require('libp2p-mplex')
 const { NOISE } = require('@chainsafe/libp2p-noise')
@@ -15,7 +15,7 @@ P2P_CHANNELS = {
 }
 
 const bootstrapMultiaddrs = [
-    '/ip4/http://RamCoin.xexo.repl.co/tcp/40523/p2p/QmPp1TePtjsKPvGHAVdn8ErELU3GTe3ie6sUgT4Xx8LPG1',
+    '/ip4/34.121.151.15/tcp/5000/p2p/QmXVLS8t5zY7UvLijDQ3Uf1Ju5GGxii5YBuDiw2YCqruyU',
 ]
 
 class P2PNode {
@@ -35,7 +35,7 @@ class P2PNode {
 
             this.libp2p = await Libp2p.create({
                 addresses: {
-                listen: ['/ip4/0.0.0.0/tcp/0']
+                listen: ['/ip4/0.0.0.0/tcp/5000']
                 },
                 modules: {
                 transport: [TCP],
