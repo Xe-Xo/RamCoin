@@ -1,5 +1,6 @@
 
 const Libp2p = require('libp2p');
+const PeerId = require('peer-id')
 const TCP = require('libp2p-tcp')
 const Mplex = require('libp2p-mplex')
 const { NOISE } = require('@chainsafe/libp2p-noise')
@@ -13,8 +14,8 @@ P2P_CHANNELS = {
     MESSAGE: "MESSAGE"
 }
 
-const bootstrapMultiaddres = [
-    '/dnsaddr/RamCoin.xexo.repl.co/p2p/QmZ5FreUxJ1Hze9TEYGMakzQJKkftCp2bVCv1i1Y5LGMYt',
+const bootstrapMultiaddrs = [
+    '/ip4/http://RamCoin.xexo.repl.co/tcp/40523/p2p/QmPp1TePtjsKPvGHAVdn8ErELU3GTe3ie6sUgT4Xx8LPG1',
 ]
 
 class P2PNode {
@@ -30,33 +31,37 @@ class P2PNode {
 
    async create(){
        try {
-        this.libp2p = await Libp2p.create({
-            addresses: {
-              listen: ['/ip4/0.0.0.0/tcp/0']
-            },
-            modules: {
-              transport: [TCP],
-              streamMuxer: [Mplex],
-              connEncryption: [NOISE],
-              pubsub: Gossipsub,
-            },
-            config: {
-                peerDiscovery: {
-                    [Bootstrap.tag]: {
-                        list: bootstrapMultiaddres
+
+
+            this.libp2p = await Libp2p.create({
+                addresses: {
+                listen: ['/ip4/0.0.0.0/tcp/0']
+                },
+                modules: {
+                transport: [TCP],
+                streamMuxer: [Mplex],
+                connEncryption: [NOISE],
+                pubsub: Gossipsub,
+                },
+                config: {
+                    peerDiscovery: {
+                        [Bootstrap.tag]: {
+                            list: bootstrapMultiaddrs
+                        }
                     }
                 }
-            }
-      
-        });
-
-        this.libp2p.on('peer:discovery', function (peerId) {
-            console.log('found peer: ', peerId.toB58String())
-          })
-
         
-        await this.libp2p.start();
-        this.subscribe(); 
+            });
+
+            this.libp2p.on('peer:discovery', function (peerId) {
+                console.log('found peer: ', peerId.toB58String())
+            });
+
+            
+
+            await this.libp2p.start();
+            console.log(this.libp2p.multiaddrs);
+            this.subscribe(); 
        } catch (error) {
         console.error(error)
        }

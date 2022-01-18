@@ -17,11 +17,11 @@ const transactionPool = new TransactionPool();
 const wallet = new Wallet({privatekey: ""});
 const p2pserver = new P2PNode(blockchain, transactionPool, wallet);
 let nodefinder = null;
+
 p2pserver.create().then(() => {
  nodefinder = new NodeFinder({p2pNode: p2pserver});
  nodefinder.broadcastAddress();
 })
- 
 
 const app = express();
 
@@ -29,107 +29,107 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'client/dist')));
 
 app.get('/api/blocks', (req, res) => {
-res.json(blockchain.chain);
+    res.json(blockchain.chain);
 });
 
 app.get('/api/blocks/length', (req, res) => {
-res.json(blockchain.chain.length);
+    res.json(blockchain.chain.length);
 });
 
 app.get('/api/blocks/:id', (req, res) => {
-const { id } = req.params;
-const { length } = blockchain.chain;
+    const { id } = req.params;
+    const { length } = blockchain.chain;
 
-const blocksReversed = blockchain.chain.slice().reverse();
+    const blocksReversed = blockchain.chain.slice().reverse();
 
-let startIndex = (id-1) * 5;
-let endIndex = id * 5;
+    let startIndex = (id-1) * 5;
+    let endIndex = id * 5;
 
-startIndex = startIndex < length ? startIndex : length;
-endIndex = endIndex < length ? endIndex : length;
+    startIndex = startIndex < length ? startIndex : length;
+    endIndex = endIndex < length ? endIndex : length;
 
-res.json(blocksReversed.slice(startIndex, endIndex));
+    res.json(blocksReversed.slice(startIndex, endIndex));
 });
 
 app.post('/api/transaction', (req, res) => {
-const { amount, recipient } = req.body;
+    const { amount, recipient } = req.body;
 
-let transaction = transactionPool
-    .existingTransaction({ inputAddress: wallet.publicKey });
+    let transaction = transactionPool
+        .existingTransaction({ inputAddress: wallet.publicKey });
 
-try {
-    if (transaction) {
-    transaction.update({ senderWallet: wallet, recipient, amount });
-    } else {
-    transaction = wallet.createTransaction({
-        recipient,
-        amount,
-        chain: blockchain.chain
-    });
+    try {
+        if (transaction) {
+        transaction.update({ senderWallet: wallet, recipient, amount });
+        } else {
+        transaction = wallet.createTransaction({
+            recipient,
+            amount,
+            chain: blockchain.chain
+        });
+        }
+    } catch(error) {
+        return res.status(400).json({ type: 'error', message: error.message });
     }
-} catch(error) {
-    return res.status(400).json({ type: 'error', message: error.message });
-}
 
-transactionPool.setTransaction(transaction);
+    transactionPool.setTransaction(transaction);
 
-//pubsub.broadcastTransaction(transaction);
+    //pubsub.broadcastTransaction(transaction);
 
-res.json({ type: 'success', transaction });
-});
+    res.json({ type: 'success', transaction });
+    });
 
-app.get('/api/transaction-pool-map', (req, res) => {
-res.json(transactionPool.transactionMap);
-});
+    app.get('/api/transaction-pool-map', (req, res) => {
+    res.json(transactionPool.transactionMap);
+    });
 
-app.get('/api/wallet-info', (req, res) => {
-const address = wallet.publicKey;
+    app.get('/api/wallet-info', (req, res) => {
+    const address = wallet.publicKey;
 
-res.json({
-    address,
-    balance: Wallet.calculateBalance({ chain: blockchain.chain, address })
-});
+    res.json({
+        address,
+        balance: Wallet.calculateBalance({ chain: blockchain.chain, address })
+    });
 });
 
 app.get('/api/known-addresses', (req, res) => {
-const addressMap = {};
+    const addressMap = {};
 
-for (let block of blockchain.chain) {
-    for (let transaction of block.data) {
-    const recipient = Object.keys(transaction.outputMap);
+    for (let block of blockchain.chain) {
+        for (let transaction of block.data) {
+        const recipient = Object.keys(transaction.outputMap);
 
-    recipient.forEach(recipient => addressMap[recipient] = recipient);
+        recipient.forEach(recipient => addressMap[recipient] = recipient);
+        }
     }
-}
 
-res.json(Object.keys(addressMap));
+    res.json(Object.keys(addressMap));
 });
 
 app.get('/api/known-balances', (req, res) => {
-const balanceMap = [];
-const addressMap = new Set();
+    const balanceMap = [];
+    const addressMap = new Set();
 
-for (let block of blockchain.chain) {
-    for (let transaction of block.data) {
-    const recipients = Object.keys(transaction.outputMap);
+    for (let block of blockchain.chain) {
+        for (let transaction of block.data) {
+        const recipients = Object.keys(transaction.outputMap);
 
-    recipients.forEach(recipient => addressMap.add(recipient));
+        recipients.forEach(recipient => addressMap.add(recipient));
+        }
     }
-}
 
-const addresslist = Array.from(addressMap);
+    const addresslist = Array.from(addressMap);
 
-for (var index = 0; index < addresslist.length; index++) {
-    var address = addresslist[index]
-    var balancecalc = Wallet.calculateBalance({ chain: blockchain.chain, address })
-    balanceMap.push({address: addresslist[index], balance: balancecalc })
-}
-res.json(balanceMap);
+    for (var index = 0; index < addresslist.length; index++) {
+        var address = addresslist[index]
+        var balancecalc = Wallet.calculateBalance({ chain: blockchain.chain, address })
+        balanceMap.push({address: addresslist[index], balance: balancecalc })
+    }
+    res.json(balanceMap);
 });
 
 
 app.get('*', (req, res) => {
-res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+    res.sendFile(path.join(__dirname, 'client/dist/index.html'));
 });
 
 const syncWithRootState = () => {
@@ -152,6 +152,7 @@ const syncWithRootState = () => {
 };
 
 const PORT = process.env.PORT || DEFAULT_PORT;
+
 app.listen(PORT, () => {
     console.log(`Listening for API on: ${PORT}`);
 

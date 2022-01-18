@@ -1,8 +1,10 @@
 const PubNub = require('pubnub');
 const { Multiaddr } = require('multiaddr')
 const http = require('http');
+const fetch = require('node-fetch');
 
 const credentials = require('./credentials');
+const { response } = require('express');
 
 
 const CHANNELS = {
@@ -15,15 +17,19 @@ class NodeFinder {
     this.pubnub = new PubNub(credentials);
     this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
     this.pubnub.addListener(this.listener());
-
+    this.external_address = '';
   }
 
 
-  broadcastAddress() {
+  async broadcastAddress() {
+
+    const external_json = await fetch('https://httpbin.org/ip').then(response => response.json());
+
     this.publish({
       channel: CHANNELS.NODE_HEARTBEAT,
-      message: JSON.stringify({peerId: this.p2pNode.libp2p.peerId, multiaddrs: this.p2pNode.libp2p.multiaddrs})
+      message: JSON.stringify({peerId: this.p2pNode.libp2p.peerId, multiaddrs: this.p2pNode.libp2p.multiaddrs, external_address: external_json.origin})
     });
+
   }
 
   subscribeToChannels() {
@@ -42,8 +48,9 @@ class NodeFinder {
 
         switch(channel) {
           case CHANNELS.NODE_HEARTBEAT:
-            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage.keys()}`);          
+            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage}`);          
             this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.multiaddress})
+            console.log(parsedMessage.external_address);
             break;
           default:
             return;

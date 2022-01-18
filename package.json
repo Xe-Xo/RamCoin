@@ -31,6 +31,7 @@
     "libp2p-gossipsub": "^0.12.1",
     "libp2p-mplex": "^0.10.7",
     "libp2p-tcp": "^0.17.2",
+    "node-fetch": "^2.6.7",
     "nodemon": "^2.0.15",
     "path": "^0.12.7",
     "pubnub": "^5.0.0",
