@@ -81,6 +81,7 @@ class P2PNode {
                 this.libp2p.peerStore.addressBook.set(peerId, multiaddrs);
             } catch (error) {
                 console.error('couldnt set address')
+                console.error(error);
             }
 
             try {

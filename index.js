@@ -165,7 +165,8 @@ app.listen(PORT, () => {
 
 setInterval(async function() {
     try {
-        await p2pserver.sendMessage("MESSAGE","TEST P2P");
+        let peerId = p2pserver.libp2p.peerId.toB58String()
+        await p2pserver.sendMessage("MESSAGE",peerId);
     } catch (error) {
         console.error(error);
     }
