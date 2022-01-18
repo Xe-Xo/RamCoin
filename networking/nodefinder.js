@@ -1,12 +1,7 @@
 const PubNub = require('pubnub');
-const uuid = require('uuid');
 
-const credentials = {
-  publishKey: 'pub-c-ec30f7ec-578f-4aa2-81c8-59077fb942c4',
-  subscribeKey: 'sub-c-eda4e664-027b-11e9-a39c-e60c31199fb2',
-  secretKey: 'sec-c-OWQwMTg1MGMtY2U2YS00ZmVlLWE1YmEtOTVmMWZmN2ZiOWVm',
-  uuid: uuid()
-};
+
+const credentials = require('./credentials');
 
 const CHANNELS = {
   NODE_HEARTBEAT: 'NODE_HEARTBEAT'
@@ -18,14 +13,26 @@ class NodeFinder {
     this.pubnub = new PubNub(credentials);
     this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
     this.pubnub.addListener(this.listener());
-    console.log(this.p2pNode);
-    this.broadcastAddress();
+    this.getExternal().then((externalip) => {this.broadcastAddress(externalip)})
   }
 
-  broadcastAddress() {
+  async getExternal(){
+    var http = require('http');
+
+    http.get({'host': 'api.ipify.org', 'port': 80, 'path': '/'}, function(resp) {
+      resp.on('data', function(ip) {
+        console.log("My public IP address is: " + ip);
+        return ip;
+      });
+    });
+
+    
+  }
+
+  broadcastAddress(externalip) {
     this.publish({
       channel: CHANNELS.NODE_HEARTBEAT,
-      message: JSON.stringify({peerId: this.p2pNode.libp2p.peerId, multiaddress: this.p2pNode.libp2p.multiaddress})
+      message: JSON.stringify({peerId: this.p2pNode.libp2p.peerId, multiaddrs: this.p2pNode.libp2p.multiaddrs, externalip: externalip})
     });
   }
 
@@ -40,12 +47,13 @@ class NodeFinder {
       message: messageObject => {
         const { channel, message } = messageObject;
 
-        console.log(`Message received. Channel: ${channel}. Message: ${message}`);
+        //console.log(`Message received. Channel: ${channel}. Message: ${message}`);
         const parsedMessage = JSON.parse(message);
 
         switch(channel) {
           case CHANNELS.NODE_HEARTBEAT:
-            this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.multiaddress})
+            console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage.multiaddrs}`);
+            this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.multiaddrs})
             break;
           default:
             return;
