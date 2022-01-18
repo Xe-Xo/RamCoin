@@ -86,7 +86,8 @@ class P2PNode {
             try {
                 await this.libp2p.dial(peerId);
             } catch (error) {
-                console.error('couldnt dial')
+                await this.libp2p.hangUp(peerId);
+                console.error(`couldnt dial @ ${peerId} ${multiaddrs} `)
             }
         }
         
