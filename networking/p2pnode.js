@@ -38,7 +38,7 @@ class P2PNode {
         try {
                 this.libp2p = await Libp2p.create({
                     addresses: {
-                    listen: ['/ip4/0.0.0.0/tcp/5000']
+                    listen: ['/ip4/0.0.0.0/tcp/0']
                     },
                     modules: {
                     transport: [TCP],
@@ -57,7 +57,7 @@ class P2PNode {
                 });
 
                 this.libp2p.on('peer:discovery', function (peerId) {
-                    console.log('found peer: ', peerId.toHexString())
+                    console.log('found peer: ', peerId._id)
                 });
 
                 try {

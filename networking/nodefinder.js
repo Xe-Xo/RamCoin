@@ -22,8 +22,6 @@ class NodeFinder {
   }
 
 
-
-
   async broadcastAddress() {
 
     const external_json = await fetch('https://httpbin.org/ip').then(response => response.json());
@@ -65,11 +63,11 @@ class NodeFinder {
               multiaddrs.push(newmultiaddr);
             }
 
-
             console.log(multiaddrs);           
             PeerId.createFromJSON(parsedMessage.peerId).then((peerId) => {
               this.p2pNode.dial({peerId: peerId, multiaddrs: multiaddrs})
-            })      
+            })
+            
             break;
           case PUBNUB_CHANNELS.TEST:
             console.log("Received Test");

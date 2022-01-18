@@ -5,6 +5,7 @@ const path = require('path');
 
 const Blockchain = require('./blockchain/blockchain');
 const TransactionPool = require('./blockchain/transaction-pool');
+const Transaction = require('./blockchain/transaction');
 const Wallet = require('./blockchain/wallet');
 const P2PNode = require('./networking/p2pnode');
 const {NodeFinder} = require('./networking/nodefinder');
@@ -167,11 +168,21 @@ app.listen(PORT, () => {
 
 setInterval(async function() {
     try {
-        let peerId = p2pserver.libp2p.peerId
-        await p2pserver.sendMessage("MESSAGE",HUMAN_NAME);
 
-
+        p2pserver.sendMessage("MESSAGE",HUMAN_NAME);
+        
+        const validTransactions = transactionPool.validTransactions();
+    
+        validTransactions.push(
+            Transaction.rewardTransaction({ minerWallet: wallet })
+        );
+    
+        blockchain.mineBlock({ data: validTransactions });
+    
         p2pserver.broadcastChain();
+    
+        transactionPool.clear();
+
 
 
 

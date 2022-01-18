@@ -1,4 +1,7 @@
 const Block = require('./block');
+const Wallet = require('./wallet');
+const hexToBinary = require('hex-to-binary');
+const {cryptoHash} = require('../util/crypto');
 
 class Blockchain {
   constructor({blockchain}) {
