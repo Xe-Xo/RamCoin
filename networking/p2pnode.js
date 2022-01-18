@@ -56,8 +56,13 @@ class P2PNode {
                 console.log('found peer: ', peerId.toB58String())
             });
 
-            await this.libp2p.start();
+            try {
+                await this.libp2p.start();
+            } catch (error) {
+                log('libp2p didnt start')
+            }
             this.subscribe(); 
+
        } catch (error) {
         console.error(error)
        }
@@ -71,8 +76,18 @@ class P2PNode {
         if (this.libp2p.peerId.toB58String() === peerId.toB58String()) {
             console.log(`My own libp2p`)
         } else {
-            this.libp2p.peerStore.addressBook.set(peerId, multiaddrs);
-            await this.libp2p.dial(peerId);
+
+            try {
+                this.libp2p.peerStore.addressBook.set(peerId, multiaddrs);
+            } catch (error) {
+                console.error('couldnt dial')
+            }
+
+            try {
+                await this.libp2p.dial(peerId);
+            } catch (error) {
+                console.error('couldnt dial')
+            }
         }
         
    }

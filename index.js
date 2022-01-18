@@ -9,6 +9,8 @@ const Wallet = require('./blockchain/wallet');
 const P2PNode = require('./networking/p2pnode');
 const {NodeFinder} = require('./networking/nodefinder');
 
+(async() => {
+
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;
 
@@ -18,10 +20,10 @@ const wallet = new Wallet({privatekey: ""});
 const p2pserver = new P2PNode(blockchain, transactionPool, wallet);
 let nodefinder = null;
 
-p2pserver.create().then(() => {
- nodefinder = new NodeFinder({p2pNode: p2pserver});
- nodefinder.broadcastAddress();
-})
+await p2pserver.create()
+nodefinder = new NodeFinder({p2pNode: p2pserver});
+nodefinder.broadcastAddress();
+
 
 const app = express();
 
@@ -161,11 +163,16 @@ app.listen(PORT, () => {
     }
 });
 
-setInterval(function() {
-    p2pserver.sendMessage("TEST P2P");
+setInterval(async function() {
+    try {
+        await p2pserver.sendMessage("TEST P2P");
+    } catch (error) {
+        console.error(error);
+    }
+    
 },15000);
 
 
-
+})()
 
 
