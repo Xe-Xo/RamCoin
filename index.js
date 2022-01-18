@@ -7,7 +7,7 @@ const Blockchain = require('./blockchain/blockchain');
 const TransactionPool = require('./blockchain/transaction-pool');
 const Wallet = require('./blockchain/wallet');
 const P2PNode = require('./networking/p2pnode');
-const NodeFinder = require('./networking/nodefinder');
+const {NodeFinder} = require('./networking/nodefinder');
 
 const DEFAULT_PORT = 3000;
 const ROOT_NODE_ADDRESS = `http://localhost:${DEFAULT_PORT}`;

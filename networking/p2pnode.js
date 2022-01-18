@@ -15,7 +15,7 @@ P2P_CHANNELS = {
 }
 
 const bootstrapMultiaddrs = [
-    '/ip4/34.121.151.15/tcp/5000/p2p/QmXVLS8t5zY7UvLijDQ3Uf1Ju5GGxii5YBuDiw2YCqruyU',
+    '/ip4/34.121.151.15/tcp/5000/p2p/QmUwuymDJReCb5KA1VMB2ETT8dEAnYRqZt1bPrVoJD1qrJ',
 ]
 
 class P2PNode {
@@ -31,8 +31,6 @@ class P2PNode {
 
    async create(){
        try {
-
-
             this.libp2p = await Libp2p.create({
                 addresses: {
                 listen: ['/ip4/0.0.0.0/tcp/5000']
@@ -57,10 +55,7 @@ class P2PNode {
                 console.log('found peer: ', peerId.toB58String())
             });
 
-            
-
             await this.libp2p.start();
-            console.log(this.libp2p.multiaddrs);
             this.subscribe(); 
        } catch (error) {
         console.error(error)
@@ -71,8 +66,14 @@ class P2PNode {
    async dial({peerId, multiaddrs}){
 
         console.log(`Adding new peer ${peerId} @ ${multiaddrs}`)
-        this.libp2p.peerStore.addressBook.set(peerId, multiaddrs);
-        await this.libp2p.dial(peerId);
+
+        if (this.libp2p.peerId.toB58String() === peerId.toB58String()) {
+            console.log(`My own libp2p`)
+        } else {
+            this.libp2p.peerStore.addressBook.set(peerId, multiaddrs);
+            await this.libp2p.dial(peerId);
+        }
+        
    }
 
    subscribe(){
