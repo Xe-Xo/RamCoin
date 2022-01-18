@@ -168,7 +168,7 @@ app.listen(PORT, () => {
 
 setInterval(async function() {
     try {
-
+        console.log(`MESSAGE: Sending ${HUMAN_NAME}`)
         p2pserver.sendMessage("MESSAGE",HUMAN_NAME);
         
         const validTransactions = transactionPool.validTransactions();

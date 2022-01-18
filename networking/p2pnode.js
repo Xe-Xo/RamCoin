@@ -117,17 +117,18 @@ class P2PNode {
    // SENDING MESSAGES
 
     sendMessage(channel,message){
-        //console.log(`${channel} Sending Message ${message}`)
-        this.libp2p.pubsub.publish(P2P_CHANNELS.MESSAGE, uint8ArrayFromString(message));
+        
+        this.libp2p.pubsub.publish(channel, uint8ArrayFromString(message));
     }
 
     recieveMessage(channel,message_data){
-        //console.log(`${channel} Received Message: ${uint8ArrayToString(message_data)}`);
 
+        let message = uint8ArrayToString(message_data);
         const parsedMessage = JSON.parse(message);
 
         switch (channel) {
             case P2P_CHANNELS.MESSAGE:
+                console.log(`${channel} Received Message: ${uint8ArrayToString(message_data)}`);
                 break;
         
             case P2P_CHANNELS.BLOCKCHAIN:
@@ -146,6 +147,8 @@ class P2PNode {
                 break;
         }
     }
+
+
 
     // BLOCKCHAIN
 
