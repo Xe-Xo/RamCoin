@@ -171,20 +171,23 @@ setInterval(async function() {
         console.log(`MESSAGE: Sending ${HUMAN_NAME}`)
         p2pserver.sendMessage("MESSAGE",HUMAN_NAME);
         
-        const validTransactions = transactionPool.validTransactions();
-    
-        validTransactions.push(
-            Transaction.rewardTransaction({ minerWallet: wallet })
-        );
-    
-        blockchain.mineBlock({ data: validTransactions });
-    
-        p2pserver.broadcastChain();
-    
-        transactionPool.clear();
+        if (p2pserver.recievedMessages >= 2) {
 
+            //ONLY MINE IF YOU ARE RECEIVING MESSAGES
+            
+            const validTransactions = transactionPool.validTransactions();
+    
+            validTransactions.push(
+                Transaction.rewardTransaction({ minerWallet: wallet })
+            );
+        
+            blockchain.mineBlock({ data: validTransactions });
+        
+            p2pserver.broadcastChain();
+        
+            transactionPool.clear();
 
-
+        }
 
     } catch (error) {
         console.error(error);

@@ -30,6 +30,7 @@ class P2PNode {
         this.transactionPool = transactionPool;
         this.wallet = wallet;
         this.human_name = HUMAN_NAME;
+        this.recievedMessages = 0;
     }
 
     // NETWORKING
@@ -129,6 +130,7 @@ class P2PNode {
         switch (channel) {
             case P2P_CHANNELS.MESSAGE:
                 console.log(`${channel} Received Message: ${uint8ArrayToString(message_data)}`);
+                this.recievedMessages += 1;
                 break;
         
             case P2P_CHANNELS.BLOCKCHAIN:
