@@ -167,6 +167,12 @@ setInterval(async function() {
     try {
         let peerId = p2pserver.libp2p.peerId
         await p2pserver.sendMessage("MESSAGE",peerId);
+
+
+        p2pserver.broadcastChain();
+
+
+
     } catch (error) {
         console.error(error);
     }
