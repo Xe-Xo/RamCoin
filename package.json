@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon index.js"
+    "start": "nodemon index.js",
+    "debug": "nodemon debug.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/Xe-Xo/RamCoin#readme",
   "dependencies": {
+    "@chainsafe/libp2p-noise": "^5.0.2",
     "bip39": "^3.0.4",
     "bn.js": "^5.2.0",
     "crypto-js": "^4.1.1",
@@ -24,7 +26,13 @@
     "elliptic": "^6.5.4",
     "express": "^4.17.2",
     "hex-to-binary": "^1.0.1",
+    "libp2p": "^0.35.8",
+    "libp2p-gossipsub": "^0.12.1",
+    "libp2p-mplex": "^0.10.7",
+    "libp2p-tcp": "^0.17.2",
+    "nodemon": "^2.0.15",
     "path": "^0.12.7",
+    "pubnub": "^5.0.0",
     "request": "^2.88.2",
     "uint8arrays": "^3.0.0",
     "uuid": "^3.4.0",
