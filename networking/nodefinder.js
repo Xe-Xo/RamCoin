@@ -13,7 +13,9 @@ class NodeFinder {
     this.pubnub = new PubNub(credentials);
     this.pubnub.subscribe({ channels: Object.values(CHANNELS) });
     this.pubnub.addListener(this.listener());
-    this.getExternal().then((externalip) => {this.broadcastAddress(externalip)})
+    this.getExternal().then((externalip) => {
+      console.log("broadcasting")
+      this.broadcastAddress(externalip)})
   }
 
   async getExternal(){
@@ -24,9 +26,7 @@ class NodeFinder {
         console.log("My public IP address is: " + ip);
         return ip;
       });
-    });
-
-    
+    });    
   }
 
   broadcastAddress(externalip) {
@@ -53,7 +53,12 @@ class NodeFinder {
         switch(channel) {
           case CHANNELS.NODE_HEARTBEAT:
             console.log(`Message received. Channel: ${channel}. Message: ${parsedMessage.multiaddrs}`);
-            this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.multiaddrs})
+
+            let newmultiaddress = parsedMessage.multiaddrs.toOptions()
+            
+            console.log(newmultiaddress);
+
+            //this.pubsub.dial({peerId: parsedMessage.peerId, multiaddress: parsedMessage.newmultiaddress})
             break;
           default:
             return;

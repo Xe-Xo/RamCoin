@@ -20,7 +20,9 @@ class P2PNode {
         this.wallet = wallet;
     }
 
+
    async create(){
+       try {
         this.libp2p = await Libp2p.create({
             addresses: {
               listen: ['/ip4/0.0.0.0/tcp/0']
@@ -29,11 +31,17 @@ class P2PNode {
               transport: [TCP],
               streamMuxer: [Mplex],
               connEncryption: [NOISE],
-              pubsub: Gossipsub
-            }});
+              pubsub: Gossipsub,
+            }
+      
+        });
         
         await this.libp2p.start();
-        this.subscribe();
+        this.subscribe(); 
+       } catch (error) {
+        console.error(error)
+       }
+
    }
 
    async dial({peerId, multiaddrs}){
