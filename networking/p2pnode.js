@@ -53,7 +53,7 @@ class P2PNode {
             });
 
             this.libp2p.on('peer:discovery', function (peerId) {
-                console.log('found peer: ', peerId)
+                console.log('found peer: ', peerId.toHexString())
             });
 
             try {
