@@ -87,14 +87,11 @@ class P2PNode {
                 this.recieveMessage(channel,message.data);
             });    
         });
-
-   
-
-    
    }
 
-   sendMessage(message_data){
-       this.libp2p.pubsub.publish(P2P_CHANNELS.MESSAGE, uint8ArrayFromString(message_data));
+   sendMessage(channel,message){
+    console.log(`${channel} Sending Message: ${message}`);
+    this.libp2p.pubsub.publish(channel, uint8ArrayFromString(message)).catch(err => console.error(err));
    }
 
    recieveMessage(channel,message_data){

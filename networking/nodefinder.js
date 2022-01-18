@@ -58,12 +58,14 @@ class NodeFinder {
             console.log(`Multiaddrs ${parsedMessage.multiaddrs}`); 
             const multiaddrs = [];
 
-            for (let index = 0; index < parsedMessage.multiaddrs.length; index++) {
-              const multiaddr = parsedMessage.multiaddrs[index];
-              const multiaddr_split = multiaddr.split('/');
-              const newmultiaddr = Multiaddr.fromNodeAddress({address: parsedMessage.external_address, port: multiaddr_split[4], family: 4}, multiaddr_split[3]);
-              multiaddrs.push(newmultiaddr);
-            }
+            //for (let index = 0; index < parsedMessage.multiaddrs.length; index++) {
+            const multiaddr = parsedMessage.multiaddrs[0];
+            const multiaddr_split = multiaddr.split('/');
+            const newmultiaddr = Multiaddr.fromNodeAddress({address: parsedMessage.external_address, port: multiaddr_split[4], family: 4}, multiaddr_split[3]);
+            multiaddrs.push(newmultiaddr);
+              
+              
+            //}
 
 
             console.log(multiaddrs);           
