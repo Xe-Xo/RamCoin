@@ -9,6 +9,8 @@ const Wallet = require('./blockchain/wallet');
 const P2PNode = require('./networking/p2pnode');
 const {NodeFinder} = require('./networking/nodefinder');
 
+const {HUMAN_NAME} = require('./networking/credentials');
+
 (async() => {
 
 const DEFAULT_PORT = 3000;
@@ -166,7 +168,7 @@ app.listen(PORT, () => {
 setInterval(async function() {
     try {
         let peerId = p2pserver.libp2p.peerId
-        await p2pserver.sendMessage("MESSAGE",peerId);
+        await p2pserver.sendMessage("MESSAGE",HUMAN_NAME);
 
 
         p2pserver.broadcastChain();

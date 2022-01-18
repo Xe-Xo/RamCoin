@@ -1,8 +1,12 @@
 const PubNub = require('pubnub');
 const uuid = PubNub.generateUUID();
 
-module.exports = credentials = {
-    publishKey: 'pub-c-xxxxxxx',
-    subscribeKey: 'sub-c-xxxxxxxx',
+const credentials = {
+    publishKey: 'pub-c-xx',
+    subscribeKey: 'sub-c-xx',
     uuid: uuid
   };
+
+const HUMAN_NAME = "HUMAN_NAME"
+
+module.exports = {credentials, HUMAN_NAME}

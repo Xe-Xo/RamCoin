@@ -1,6 +1,8 @@
 
 const Libp2p = require('libp2p');
 
+const {HUMAN_NAME} = require('./credentials');
+
 const TCP = require('libp2p-tcp')
 const Mplex = require('libp2p-mplex')
 const { NOISE } = require('@chainsafe/libp2p-noise')
@@ -12,7 +14,6 @@ const Bootstrap = require('libp2p-bootstrap')
 
 P2P_CHANNELS = {
     MESSAGE: "MESSAGE",
-    VOTE: "VOTE",
     BLOCKCHAIN: "BLOCKCHAIN",
     TRANSACTION: "TRANSACTION"
 }
@@ -28,6 +29,7 @@ class P2PNode {
         this.blockchain = blockchain;
         this.transactionPool = transactionPool;
         this.wallet = wallet;
+        this.human_name = HUMAN_NAME;
     }
 
     // NETWORKING

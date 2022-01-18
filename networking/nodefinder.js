@@ -5,7 +5,7 @@ const PeerId = require('peer-id')
 const http = require('http');
 const fetch = require('node-fetch');
 
-const credentials = require('./credentials');
+const {credentials} = require('./credentials');
 
 
 const PUBNUB_CHANNELS = {
