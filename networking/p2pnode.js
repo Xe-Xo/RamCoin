@@ -11,11 +11,14 @@ const { toString: uint8ArrayToString } = require('uint8arrays/to-string')
 const Bootstrap = require('libp2p-bootstrap')
 
 P2P_CHANNELS = {
-    MESSAGE: "MESSAGE"
+    MESSAGE: "MESSAGE",
+    VOTE: "VOTE",
+    BLOCKCHAIN: "BLOCKCHAIN",
+    TRANSACTION: "TRANSACTION"
 }
 
 const bootstrapMultiaddrs = [
-    '/ip4/34.121.151.15/tcp/5000/p2p/QmUwuymDJReCb5KA1VMB2ETT8dEAnYRqZt1bPrVoJD1qrJ',
+
 ]
 
 class P2PNode {
@@ -26,8 +29,6 @@ class P2PNode {
         this.transactionPool = transactionPool;
         this.wallet = wallet;
     }
-
-
 
    async create(){
        try {
@@ -77,19 +78,27 @@ class P2PNode {
    }
 
    subscribe(){
-       this.libp2p.pubsub.subscribe(P2P_CHANNELS.MESSAGE);
-       console.log(`P2P Node subscribed to ${P2P_CHANNELS.MESSAGE}`)
-       this.libp2p.pubsub.on(P2P_CHANNELS.MESSAGE, (message) => {
-           this.recieveMessage(message.data);
-       })
+
+       let p2p_channels = Object.values(P2P_CHANNELS);
+        p2p_channels.forEach(channel => {
+            this.libp2p.pubsub.subscribe(channel);
+            console.log(`P2P Node subscribed to ${channel}`)
+            this.libp2p.pubsub.on(channel, (message) => {
+                this.recieveMessage(channel,message.data);
+            });    
+        });
+
+   
+
+    
    }
 
    sendMessage(message_data){
        this.libp2p.pubsub.publish(P2P_CHANNELS.MESSAGE, uint8ArrayFromString(message_data));
    }
 
-   recieveMessage(message_data){
-       console.log(`Received Message: ${uint8ArrayToString(message_data)}`);
+   recieveMessage(channel,message_data){
+       console.log(`${channel} Received Message: ${uint8ArrayToString(message_data)}`);
    }
 
 }

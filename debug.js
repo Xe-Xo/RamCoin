@@ -1,5 +1,16 @@
 const {NodeFinder, PUBNUB_CHANNELS} = require('./networking/nodefinder');
+const credentials = require('./networking/credentials');
 
-const node_finder = new NodeFinder({p2pNode: null});
+const P2PNode = require('./networking/p2pnode');
 
-node_finder.publish({ channel: "CHANNEL", message: "MESSAGE_TEST1"})
+
+const p2pserver = new P2PNode(null, null, null);
+
+p2pserver.create().then(() => {
+    nodefinder = new NodeFinder({p2pNode: p2pserver});
+    setInterval(function() {
+        nodefinder.publish({ channel: "TEST", message: "home"});
+    },60000);
+})
+
+

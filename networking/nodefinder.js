@@ -7,7 +7,6 @@ const fetch = require('node-fetch');
 
 const credentials = require('./credentials');
 
-console.log(credentials)
 
 const PUBNUB_CHANNELS = {
   TEST: 'TEST',
@@ -18,9 +17,8 @@ class NodeFinder {
   constructor({p2pNode}) {
     this.p2pNode = p2pNode;
     this.pubnub = new PubNub(credentials);
-    this.subscribeToChannels();
+    this.pubnub.subscribe({ channels: Object.values(PUBNUB_CHANNELS) });
     this.pubnub.addListener(this.listener());
-    this.external_address = '';
   }
 
 
@@ -49,7 +47,7 @@ class NodeFinder {
       message: messageObject => {
         const { channel, message } = messageObject;
 
-        //console.log(`Message received. Channel: ${channel}. Message: ${message}`);
+        console.log(`Message received. Channel: ${channel}. Message: ${message}`);
         const parsedMessage = JSON.parse(message);
 
         switch(channel) {
@@ -72,9 +70,11 @@ class NodeFinder {
             PeerId.createFromJSON(parsedMessage.peerId).then((peerId) => {
               this.p2pNode.dial({peerId: peerId, multiaddrs: multiaddrs})
             })      
-            
-            
             break;
+          case PUBNUB_CHANNELS.TEST:
+            console.log("Received Test");
+
+
           default:
             return;
         }

@@ -161,7 +161,9 @@ app.listen(PORT, () => {
     }
 });
 
-
+setInterval(function() {
+    p2pserver.sendMessage("TEST P2P");
+},15000);
 
 
 

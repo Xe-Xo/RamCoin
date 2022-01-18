@@ -1,8 +1,8 @@
-const uuid = require('uuid');
+const PubNub = require('pubnub');
+const uuid = PubNub.generateUUID();
 
 module.exports = credentials = {
     publishKey: 'pub-c-xxxxxxx',
     subscribeKey: 'sub-c-xxxxxxxx',
-    secretKey: 'sec-c-xxxxxxxx',
-    uuid: uuid()
+    uuid: uuid
   };
