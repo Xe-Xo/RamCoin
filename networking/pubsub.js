@@ -30,8 +30,9 @@ class PubSub {
               const parsedMessage = JSON.parse(message);
 
               switch(channel) {
-                case PUBNUB_CHANNELS.NODE_HEARTBEAT:                 
-                  break;
+                case PUBNUB_CHANNELS.NODE_HEARTBEAT:
+                    this.onNodeHeartBeat(parsedMessage);                
+                    break;
                 case PUBNUB_CHANNELS.TEST:
                   break
                 case PUBNUB_CHANNELS.NEW_BLOCK:                 
@@ -47,6 +48,7 @@ class PubSub {
     }
 
     onNodeHeartBeat(message){
+        console.log(message);
         if (uuid === this.uuid) {
             return; //Dont do anything on our own heartbeat
         }
@@ -99,9 +101,8 @@ class PubSub {
     }
 
     updateAliveNode({uuid, external_address, wallet_public}){
-        if (uuid !== this.uuid) {
-            this.aliveNodes.set(uuid,{external_address: external_address, wallet_public: wallet_public, lastHeartBeat: Date.now()})
-        }
+        this.aliveNodes.set(uuid,{external_address: external_address, wallet_public: wallet_public, lastHeartBeat: Date.now()})
+        console.log(this.aliveNodes);
     }
 
 }
