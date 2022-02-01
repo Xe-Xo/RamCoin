@@ -3,6 +3,9 @@ const { v4: uuidv4 } = require('uuid')
 const fetch = require('node-fetch');
 const {credentials} = require('./credentials');
 
+
+
+
 const PUBNUB_CHANNELS = {
     TEST: 'TEST',
     NODE_HEARTBEAT: 'NODE_HEARTBEAT', // send external IP, blockchain size
@@ -19,6 +22,7 @@ class PubSub {
         this.aliveNodes = new Map();
         this.pubnub = new PubNub(credentials);
         this.pubnub.subscribe({ channels: Object.values(PUBNUB_CHANNELS)});
+        this.external_address = "";
         //this.pubnub.addListener({
         //    message: function(messageEvent) {
         //        console.log(messageEvent.message.title);
@@ -50,6 +54,12 @@ class PubSub {
 
     }
 
+
+    async update_external_address(){
+        const external_json = await fetch('https://httpbin.org/ip').then(response => response.json());
+        this.external_address = external_json.origin;
+    }
+
     listener(){
         return 
     }
@@ -63,23 +73,22 @@ class PubSub {
         this.updateAliveNode({uuid: message.uuid, external_address: message.external_address, wallet_public: message.wallet_public})
     }
 
-    async sendNodeHeartBeat(){
+    sendNodeHeartBeat(){
 
-        const external_json = await fetch('https://httpbin.org/ip').then(response => response.json());
-        console.log(`My external IP is ${external_json.origin}`)
+        
+        //console.log(`My external IP is ${external_json.origin}`)
 
-        const result = await this.pubnub.publish({
+        this.pubnub.publish({
             channel: PUBNUB_CHANNELS.NODE_HEARTBEAT,
             message: JSON.stringify({
                 uuid: this.uuid,
                 wallet_public: this.wallet.publicKey,
                 block_length: this.blockchain.chain.length,
-                external_address: external_json.origin,
+                external_address: this.external_address,
                 time_sent: Date.now()
             })
           });
 
-        return result;
     }
 
     onNewBlock(message){
@@ -90,11 +99,22 @@ class PubSub {
         return;
     }
 
-    async sendNewBlock(){
-        return;
+    sendNewBlock(){
+        this.pubnub.publish({
+            channel: PUBNUB_CHANNELS.NEW_BLOCK,
+            message: JSON.stringify({
+                block:  this.blockchain.chain[ this.blockchain.chain.length - 1],
+                wallet_public: this.wallet.publicKey,
+                block_length: this.blockchain.chain.length,
+                external_address: this.external_address,
+                time_sent: Date.now()
+            })
+          });
+
+
     }
 
-    async sendNewTransaction(){
+    sendNewTransaction(){
         return;
     }
 

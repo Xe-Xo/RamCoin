@@ -20,14 +20,44 @@ const pubsub = new PubSub(blockchain, transactionPool, wallet);
 
 //app.use(bodyParser.json());
 
-setInterval(async function() {
-    try {
+pubsub.update_external_address().then(startup()).catch(error => console.error("Couldnt find external", error));
+
+function mine(){
+    console.log("mining block")  
+    const validTransactions = transactionPool.validTransactions();
+    
+    validTransactions.push(
+        Transaction.rewardTransaction({ minerWallet: wallet })
+    );
+
+    blockchain.mineBlock({ data: validTransactions });
+
+    pubsub.sendNewBlock(blockchain.chain[blockchain.chain.length-1]);
+
+    transactionPool.clear();
+}
+
+
+function startup(){
+
+
+    setInterval(async function() {
+        try {
+            
+            pubsub.sendNodeHeartBeat();
+            console.log("sent HeartBeat")    
         
-        await pubsub.sendNodeHeartBeat();
-        console.log("sent HeartBeat")
+        } catch (error) {
+            console.error(error);
+        }
+        
+    },15000);
     
-    } catch (error) {
-        console.error(error);
-    }
-    
-},15000);
+    setInterval(function() {
+        mine()
+    }, 5*60*1000)
+
+
+
+}
+
