@@ -23,34 +23,32 @@ class PubSub {
         this.pubnub = new PubNub(credentials);
         this.pubnub.subscribe({ channels: Object.values(PUBNUB_CHANNELS)});
         this.external_address = "";
-        //this.pubnub.addListener({
-        //    message: function(messageEvent) {
-        //        console.log(messageEvent.message.title);
-        //        console.log(messageEvent.message.description);
-        //    }
-        //})
         this.pubnub.addListener({
-            message: function(messageEvent) {
-              const { channel, message } = messageEvent;
-              console.log(`Message received. Channel: ${channel}. Message: ${message}`);
-              const parsedMessage = JSON.parse(message);
-
-              switch(channel) {
-                case PUBNUB_CHANNELS.NODE_HEARTBEAT:
-                    this.onNodeHeartBeat(parsedMessage);                
-                    break;
-                case PUBNUB_CHANNELS.TEST:
-                  break
-                case PUBNUB_CHANNELS.NEW_BLOCK:                 
-                  break;
-                case PUBNUB_CHANNELS.NEW_TRANSACTION:
-                  break      
-      
-                default:
-                  return;
-              }
+            message: function(m) {
+                // handle message
+                var channelName = m.channel; // The channel to which the message was published
+                var channelGroup = m.subscription; // The channel group or wildcard subscription match (if exists)
+                var pubTT = m.timetoken; // Publish timetoken
+                var msg = m.message; // The Payload
+                var publisher = m.publisher; //The Publisher
+                console.log(`Message received. Channel: ${channelName}. Message: ${msg}`);
+                let parsedMessage = JSON.parse(msg);
+                switch(channelName) {
+                    case PUBNUB_CHANNELS.NODE_HEARTBEAT:
+                        this.onNodeHeartBeat(parsedMessage);                
+                        break;
+                    case PUBNUB_CHANNELS.TEST:
+                        break
+                    case PUBNUB_CHANNELS.NEW_BLOCK:                 
+                        break;
+                    case PUBNUB_CHANNELS.NEW_TRANSACTION:
+                        break;      
+                    default:
+                        break;
+                  }
             }
-          });
+            }
+        );
 
     }
 
@@ -60,9 +58,6 @@ class PubSub {
         this.external_address = external_json.origin;
     }
 
-    listener(){
-        return 
-    }
 
     onNodeHeartBeat(message){
         console.log(message);

@@ -41,17 +41,18 @@ function mine(){
 function startup(){
 
 
-    setInterval(async function() {
+    setInterval(function() {
         try {
             
             pubsub.sendNodeHeartBeat();
-            console.log("sent HeartBeat")    
+            console.log("sent HeartBeat");  
+            console.log(pubsub.aliveNodes);
         
         } catch (error) {
             console.error(error);
         }
         
-    },15000);
+    },1*60*1000);
     
     setInterval(function() {
         mine()
