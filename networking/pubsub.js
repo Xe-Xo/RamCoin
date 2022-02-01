@@ -19,19 +19,15 @@ class PubSub {
         this.aliveNodes = new Map();
         this.pubnub = new PubNub(credentials);
         this.pubnub.subscribe({ channels: Object.values(PUBNUB_CHANNELS)});
+        //this.pubnub.addListener({
+        //    message: function(messageEvent) {
+        //        console.log(messageEvent.message.title);
+        //        console.log(messageEvent.message.description);
+        //    }
+        //})
         this.pubnub.addListener({
             message: function(messageEvent) {
-                console.log(messageEvent.message.title);
-                console.log(messageEvent.message.description);
-            }
-        })
-
-    }
-
-    listener(){
-        return {
-            message: messageObject => {
-              const { channel, message } = messageObject;
+              const { channel, message } = messageEvent;
               console.log(`Message received. Channel: ${channel}. Message: ${message}`);
               const parsedMessage = JSON.parse(message);
 
@@ -50,7 +46,12 @@ class PubSub {
                   return;
               }
             }
-          }
+          });
+
+    }
+
+    listener(){
+        return 
     }
 
     onNodeHeartBeat(message){
