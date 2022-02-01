@@ -19,7 +19,12 @@ class PubSub {
         this.aliveNodes = new Map();
         this.pubnub = new PubNub(credentials);
         this.pubnub.subscribe({ channels: Object.values(PUBNUB_CHANNELS)});
-        this.pubnub.addListener(this.listener());
+        this.pubnub.addListener({
+            message: function(messageEvent) {
+                console.log(messageEvent.message.title);
+                console.log(messageEvent.message.description);
+            }
+        })
 
     }
 
